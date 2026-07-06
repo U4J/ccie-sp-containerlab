@@ -1,0 +1,19 @@
+name: xrd-playground
+
+mgmt:
+  network: xrd-playground-mgmt
+  ipv4-subnet: 172.31.20.0/24
+
+topology:
+  defaults:
+    kind: cisco_xrd
+    image: docker.io/sbezverk/xrd-control-plane:26.2.1
+
+  nodes:
+    xrd1:
+      mgmt-ipv4: 172.31.20.11
+    xrd2:
+      mgmt-ipv4: 172.31.20.12
+
+  links:
+    - endpoints: ["xrd1:Gi0-0-0-0", "xrd2:Gi0-0-0-0"]

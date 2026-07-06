@@ -1,8 +1,8 @@
-LAB ?= 01-isis-dual-stack
+LAB ?= xrd-playground
 TOPO := labs/$(LAB)/topology.clab.yml
 SCRIPTS := labs/$(LAB)/scripts
 
-.PHONY: list preflight deploy redeploy inspect verify destroy
+.PHONY: list preflight deploy redeploy inspect verify cli-xrd1 cli-xrd2 destroy clean
 
 list:
 	@find labs -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort
@@ -26,6 +26,14 @@ inspect:
 verify:
 	bash "$(SCRIPTS)/verify.sh"
 
-destroy:
-	sudo containerlab destroy --cleanup --topo "$(TOPO)"
+cli-xrd1:
+	docker exec -it clab-xrd-playground-xrd1 /pkg/bin/xr_cli.sh
 
+cli-xrd2:
+	docker exec -it clab-xrd-playground-xrd2 /pkg/bin/xr_cli.sh
+
+destroy:
+	sudo containerlab destroy --topo "$(TOPO)"
+
+clean:
+	sudo containerlab destroy --cleanup --topo "$(TOPO)"

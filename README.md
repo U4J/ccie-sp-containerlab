@@ -1,91 +1,73 @@
-# CCIE-SP Containerlab
+# Two-node XRd Playground
 
-以 Containerlab 建立可重複部署、驗證與故障排除的 CCIE Service Provider
-練習環境。內容依 CCIE Service Provider v5.1 lab exam topics 規劃，但不包含
-Cisco 官方考題或受授權限制的映像檔。
-
-## 起始 Lab
-
-`01-isis-dual-stack` 是一個四節點的雙棧 Service Provider underlay：
+兩台未預先設定業務功能的 Cisco XRd Control Plane 節點，透過一條資料 link
+直接互連，適合登入後自行設定與測試 IOS XR 功能。
 
 ```text
-              ┌──── p1 ────┐
-              │            │
-             pe1          pe2
-              │            │
-              └──── p2 ────┘
+xrd1 Gi0/0/0/0 ───────── Gi0/0/0/0 xrd2
+     172.31.20.11         172.31.20.12
 ```
 
-- IS-IS Level 2
-- IPv4 與 IPv6 point-to-point addressing
-- 兩條等成本路徑
-- Loopback reachability 驗證
-- FRRouting 開源映像，不需 Cisco image 即可開始
+使用的 image：
 
-## 需求
+```text
+docker.io/sbezverk/xrd-control-plane:26.2.1
+```
 
-- Linux 或 WSL2
-- Docker
-- Containerlab
-- GNU Make
+## 啟動
 
 ```bash
-docker version
-containerlab version
 make preflight
-```
-
-## 快速開始
-
-```bash
 make deploy
 make verify
-make inspect
+```
+
+XRd 首次開機約需一至數分鐘。`make verify` 會等待兩台 XR CLI 就緒。
+
+## 進入 XR CLI
+
+```bash
+make cli-xrd1
+make cli-xrd2
+```
+
+也可以直接執行：
+
+```bash
+docker exec -it clab-xrd-playground-xrd1 /pkg/bin/xr_cli.sh
+docker exec -it clab-xrd-playground-xrd2 /pkg/bin/xr_cli.sh
+```
+
+## SSH 管理
+
+| Node | Management IP | Username | Password |
+| --- | --- | --- | --- |
+| xrd1 | `172.31.20.11` | `clab` | `clab@123` |
+| xrd2 | `172.31.20.12` | `clab` | `clab@123` |
+
+```bash
+ssh clab@172.31.20.11
+ssh clab@172.31.20.12
+```
+
+資料介面一開始沒有 IP，請在 XR CLI 中自行設定
+`GigabitEthernet0/0/0/0`。
+
+## 停止與清除
+
+```bash
 make destroy
 ```
 
-選擇其他 lab 時指定其目錄名稱：
+`destroy` 會保留 Containerlab lab directory，因此在 XR CLI 中 commit 的設定可供
+下次部署使用。若要連持久化設定一起全部清除：
 
 ```bash
-make LAB=01-isis-dual-stack deploy
+make clean
 ```
 
-進入節點：
-
-```bash
-docker exec -it clab-ccie-sp-isis-pe1 vtysh
-```
-
-建議先執行 `make deploy && make verify` 建立 baseline，再停止一條 link 或修改
-metric，觀察 IS-IS、RIB 與 FIB 的收斂結果。
-
-## Repository 結構
+主機需要：
 
 ```text
-.
-├── docs/
-│   └── blueprint-map.md
-├── labs/
-│   └── 01-isis-dual-stack/
-│       ├── configs/
-│       ├── scripts/
-│       └── topology.clab.yml
-├── Makefile
-└── README.md
+fs.inotify.max_user_instances=64000
 ```
-
-每個 lab 都應包含：
-
-1. 獨立的 Containerlab topology。
-2. 可版本控制的 startup configs。
-3. 自動化驗證腳本。
-4. README 中的目標、故障情境與完成條件。
-
-## 學習路線
-
-後續 lab 的建議順序與 CCIE-SP v5.1 對照請見
-[`docs/blueprint-map.md`](docs/blueprint-map.md)。
-
-> 注意：Containerlab 與 FRR 適合練習協定行為、自動化與故障排除；部分
-> IOS XR 特有功能仍需合法取得的 Cisco XRd、CML 或其他 Cisco lab 環境。
-
