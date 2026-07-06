@@ -16,4 +16,12 @@ make cli-xrd1
 make cli-xrd2
 ```
 
-資料介面不含預設 IP 或 routing protocol 設定，可直接由 XR CLI 開始配置。
+完成設定並在 XR CLI 執行 `commit` 後，可將兩台 running-config 匯出至 Git
+追蹤的設定檔：
+
+```bash
+make save-configs
+git diff -- labs/xrd-playground/configs/
+```
+
+Topology 會在全新部署或 `make redeploy` 時讀取這些設定檔。

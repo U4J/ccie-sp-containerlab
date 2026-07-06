@@ -12,8 +12,10 @@ topology:
   nodes:
     xrd1:
       mgmt-ipv4: 172.31.20.11
+      startup-config: configs/xrd1.cfg
     xrd2:
       mgmt-ipv4: 172.31.20.12
+      startup-config: configs/xrd2.cfg
 
   links:
     - endpoints: ["xrd1:Gi0-0-0-0", "xrd2:Gi0-0-0-0"]

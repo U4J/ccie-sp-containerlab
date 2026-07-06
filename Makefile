@@ -2,7 +2,7 @@ LAB ?= xrd-playground
 TOPO := labs/$(LAB)/topology.clab.yml
 SCRIPTS := labs/$(LAB)/scripts
 
-.PHONY: list preflight deploy redeploy inspect verify cli-xrd1 cli-xrd2 destroy clean
+.PHONY: list preflight deploy redeploy inspect verify save-configs cli-xrd1 cli-xrd2 destroy clean
 
 list:
 	@find labs -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort
@@ -25,6 +25,9 @@ inspect:
 
 verify:
 	bash "$(SCRIPTS)/verify.sh"
+
+save-configs:
+	bash "$(SCRIPTS)/save-configs.sh"
 
 cli-xrd1:
 	docker exec -it clab-xrd-playground-xrd1 /pkg/bin/xr_cli.sh
