@@ -2,7 +2,7 @@
 set -euo pipefail
 
 lab_name="xrd-playground"
-nodes=(xrd1 xrd2)
+nodes=(pe1 abr1 p1 abr3 pe3 abr2 p2 abr4)
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 lab_dir="$(cd "$script_dir/.." && pwd)"

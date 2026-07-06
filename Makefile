@@ -2,7 +2,7 @@ LAB ?= xrd-playground
 TOPO := labs/$(LAB)/topology.clab.yml
 SCRIPTS := labs/$(LAB)/scripts
 
-.PHONY: list preflight deploy redeploy inspect verify save-configs cli-xrd1 cli-xrd2 destroy clean
+.PHONY: list preflight deploy redeploy inspect verify save-configs cli destroy clean
 
 list:
 	@find labs -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort
@@ -29,11 +29,9 @@ verify:
 save-configs:
 	bash "$(SCRIPTS)/save-configs.sh"
 
-cli-xrd1:
-	docker exec -it clab-xrd-playground-xrd1 /pkg/bin/xr_cli.sh
-
-cli-xrd2:
-	docker exec -it clab-xrd-playground-xrd2 /pkg/bin/xr_cli.sh
+cli:
+	@test -n "$(NODE)" || { echo "Usage: make cli NODE=pe1" >&2; exit 1; }
+	docker exec -it "clab-$(LAB)-$(NODE)" /pkg/bin/xr_cli.sh
 
 destroy:
 	sudo containerlab destroy --topo "$(TOPO)"

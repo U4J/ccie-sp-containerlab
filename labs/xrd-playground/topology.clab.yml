@@ -10,12 +10,37 @@ topology:
     image: docker.io/sbezverk/xrd-control-plane:26.2.1
 
   nodes:
-    xrd1:
+    pe1:
       mgmt-ipv4: 172.31.20.11
-      startup-config: configs/xrd1.cfg
-    xrd2:
+    abr1:
       mgmt-ipv4: 172.31.20.12
-      startup-config: configs/xrd2.cfg
+    p1:
+      mgmt-ipv4: 172.31.20.13
+    abr3:
+      mgmt-ipv4: 172.31.20.14
+    pe3:
+      mgmt-ipv4: 172.31.20.15
+    abr2:
+      mgmt-ipv4: 172.31.20.16
+    p2:
+      mgmt-ipv4: 172.31.20.17
+    abr4:
+      mgmt-ipv4: 172.31.20.18
 
   links:
-    - endpoints: ["xrd1:Gi0-0-0-0", "xrd2:Gi0-0-0-0"]
+    # Upper path: PE1 -- ABR1 -- P1 -- ABR3 -- PE3
+    - endpoints: ["pe1:Gi0-0-0-0", "abr1:Gi0-0-0-0"]
+    - endpoints: ["abr1:Gi0-0-0-1", "p1:Gi0-0-0-0"]
+    - endpoints: ["p1:Gi0-0-0-1", "abr3:Gi0-0-0-0"]
+    - endpoints: ["abr3:Gi0-0-0-1", "pe3:Gi0-0-0-0"]
+
+    # Lower path: PE1 -- ABR2 -- P2 -- ABR4 -- PE3
+    - endpoints: ["pe1:Gi0-0-0-1", "abr2:Gi0-0-0-0"]
+    - endpoints: ["abr2:Gi0-0-0-1", "p2:Gi0-0-0-0"]
+    - endpoints: ["p2:Gi0-0-0-1", "abr4:Gi0-0-0-0"]
+    - endpoints: ["abr4:Gi0-0-0-1", "pe3:Gi0-0-0-1"]
+
+    # Vertical links
+    - endpoints: ["abr1:Gi0-0-0-2", "abr2:Gi0-0-0-2"]
+    - endpoints: ["p1:Gi0-0-0-2", "p2:Gi0-0-0-2"]
+    - endpoints: ["abr3:Gi0-0-0-2", "abr4:Gi0-0-0-2"]

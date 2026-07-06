@@ -2,10 +2,16 @@
 set -euo pipefail
 
 lab_name="xrd-playground"
-nodes=(xrd1 xrd2)
+nodes=(pe1 abr1 p1 abr3 pe3 abr2 p2 abr4)
 declare -A mgmt_ips=(
-  [xrd1]="172.31.20.11"
-  [xrd2]="172.31.20.12"
+  [pe1]="172.31.20.11"
+  [abr1]="172.31.20.12"
+  [p1]="172.31.20.13"
+  [abr3]="172.31.20.14"
+  [pe3]="172.31.20.15"
+  [abr2]="172.31.20.16"
+  [p2]="172.31.20.17"
+  [abr4]="172.31.20.18"
 )
 max_attempts=36
 wait_seconds=5
@@ -29,7 +35,7 @@ for node in "${nodes[@]}"; do
   fi
 done
 
-echo "Waiting for both XR CLI instances..."
+echo "Waiting for all XR CLI instances..."
 for ((attempt = 1; attempt <= max_attempts; attempt++)); do
   ready=0
   for node in "${nodes[@]}"; do
@@ -69,4 +75,4 @@ for node in "${nodes[@]}"; do
 done
 
 echo
-echo "PASS: xrd1 and xrd2 are running and their XR CLI is ready"
+echo "PASS: all eight XRd nodes are running and their XR CLI is ready"
