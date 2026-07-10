@@ -44,7 +44,7 @@ show route 198.51.100.2/32
 若想保留實驗中修改後的 running config，而不覆寫版本控制的 startup config：
 
 ```bash
-make save-configs
+make LAB=00-xrd-playground save-configs
 ```
 
 檔案會寫入不納入版本控制的 `snapshots/`。停止 lab 使用 `make destroy`；要同時

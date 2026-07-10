@@ -60,9 +60,12 @@ labs/<stage>-<topic>/
 ├── topology.clab.yml
 ├── configs/
 └── scripts/
-    ├── verify.sh
-    └── save-configs.sh
+    └── verify.sh
 ```
+
+共用的 `scripts/save-configs.sh` 由根目錄的 Makefile 呼叫，會從各 lab 的
+`topology.clab.yml` 讀取 lab 名稱和節點清單，將 XRd running-config 匯出到該 lab 的
+`snapshots/`。
 
 在實作前，README 應先說明目標、拓撲、IP/ASN 規劃、預期驗證結果，以及刻意植入
 的故障（若有）。`configs/` 放受版本控制的 deterministic startup config；實驗

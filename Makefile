@@ -30,7 +30,7 @@ verify: require-lab
 	bash "$(SCRIPTS)/verify.sh"
 
 save-configs: require-lab
-	bash "$(SCRIPTS)/save-configs.sh"
+	bash "scripts/save-configs.sh" "$(TOPO)"
 
 cli: require-lab
 	@test -n "$(NODE)" || { echo "Usage: make LAB=<lab-name> cli NODE=<node>" >&2; exit 1; }
