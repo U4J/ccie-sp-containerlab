@@ -1,13 +1,16 @@
-LAB ?= xrd-playground
+LAB ?=
 TOPO := labs/$(LAB)/topology.clab.yml
 SCRIPTS := labs/$(LAB)/scripts
 
-.PHONY: list preflight deploy redeploy inspect verify save-configs cli destroy clean
+.PHONY: list require-lab preflight deploy redeploy inspect verify save-configs cli destroy clean
 
 list:
 	@find labs -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort
 
-preflight:
+require-lab:
+	@test -n "$(LAB)" || { echo "Usage: make LAB=<lab-name> <target>" >&2; exit 1; }
+
+preflight: require-lab
 	@test -f "$(TOPO)" || { echo "Unknown lab: $(LAB)" >&2; exit 1; }
 	@command -v docker >/dev/null || { echo "docker not found" >&2; exit 1; }
 	@command -v containerlab >/dev/null || { echo "containerlab not found" >&2; exit 1; }
@@ -20,21 +23,21 @@ deploy: preflight
 redeploy: preflight
 	sudo containerlab deploy --reconfigure --topo "$(TOPO)"
 
-inspect:
+inspect: require-lab
 	sudo containerlab inspect --topo "$(TOPO)"
 
-verify:
+verify: require-lab
 	bash "$(SCRIPTS)/verify.sh"
 
-save-configs:
+save-configs: require-lab
 	bash "$(SCRIPTS)/save-configs.sh"
 
-cli:
-	@test -n "$(NODE)" || { echo "Usage: make cli NODE=pe1" >&2; exit 1; }
+cli: require-lab
+	@test -n "$(NODE)" || { echo "Usage: make LAB=<lab-name> cli NODE=<node>" >&2; exit 1; }
 	docker exec -it "clab-$(LAB)-$(NODE)" /pkg/bin/xr_cli.sh
 
-destroy:
+destroy: require-lab
 	sudo containerlab destroy --topo "$(TOPO)"
 
-clean:
+clean: require-lab
 	sudo containerlab destroy --cleanup --topo "$(TOPO)"

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-lab_name="xrd-playground"
+lab_name="00-xrd-playground"
 nodes=(ce-a pe-1 p-1 p-2 pe-2 ce-b)
 core_nodes=(pe-1 p-1 p-2 pe-2)
 declare -A mgmt_ips=(

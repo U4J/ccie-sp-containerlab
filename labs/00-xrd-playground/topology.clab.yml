@@ -1,7 +1,7 @@
-name: xrd-playground
+name: 00-xrd-playground
 
 mgmt:
-  network: xrd-playground-mgmt
+  network: 00-xrd-playground-mgmt
   ipv4-subnet: 172.31.20.0/24
 
 topology:

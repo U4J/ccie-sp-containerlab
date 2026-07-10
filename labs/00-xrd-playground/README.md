@@ -14,27 +14,27 @@ L3VPN。
 
 | Node | Container | Management IP | Loopback / test IP |
 | --- | --- | --- | --- |
-| CE-A | `clab-xrd-playground-ce-a` | `172.31.20.11` | `198.51.100.1/32` |
-| PE-1 | `clab-xrd-playground-pe-1` | `172.31.20.12` | `10.255.0.1/32` |
-| P-1 | `clab-xrd-playground-p-1` | `172.31.20.13` | `10.255.0.2/32` |
-| P-2 | `clab-xrd-playground-p-2` | `172.31.20.14` | `10.255.0.3/32` |
-| PE-2 | `clab-xrd-playground-pe-2` | `172.31.20.15` | `10.255.0.4/32` |
-| CE-B | `clab-xrd-playground-ce-b` | `172.31.20.16` | `198.51.100.2/32` |
+| CE-A | `clab-00-xrd-playground-ce-a` | `172.31.20.11` | `198.51.100.1/32` |
+| PE-1 | `clab-00-xrd-playground-pe-1` | `172.31.20.12` | `10.255.0.1/32` |
+| P-1 | `clab-00-xrd-playground-p-1` | `172.31.20.13` | `10.255.0.2/32` |
+| P-2 | `clab-00-xrd-playground-p-2` | `172.31.20.14` | `10.255.0.3/32` |
+| PE-2 | `clab-00-xrd-playground-pe-2` | `172.31.20.15` | `10.255.0.4/32` |
+| CE-B | `clab-00-xrd-playground-ce-b` | `172.31.20.16` | `198.51.100.2/32` |
 
 所有設定都在 `configs/`，並由 `startup-config` 載入。登入資訊為
 `clab / clab@123`。
 
 ```bash
-make deploy
-make verify
-make cli NODE=pe-1
+make LAB=00-xrd-playground deploy
+make LAB=00-xrd-playground verify
+make LAB=00-xrd-playground cli NODE=pe-1
 ```
 
 驗證腳本會檢查 XR CLI 就緒、IS-IS/LDP 鄰居數量、兩端 CE loopback 的路由，和
 CE-A 到 CE-B 的 ping。也可手動觀察：
 
 ```bash
-make cli NODE=pe-1
+make LAB=00-xrd-playground cli NODE=pe-1
 show isis adjacency
 show mpls ldp neighbor
 show mpls forwarding

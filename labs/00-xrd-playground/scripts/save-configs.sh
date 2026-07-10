@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-lab_name="xrd-playground"
+lab_name="00-xrd-playground"
 nodes=(ce-a pe-1 p-1 p-2 pe-2 ce-b)
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 lab_dir="$(cd "$script_dir/.." && pwd)"
 snapshots_dir="$lab_dir/snapshots"
-tmp_dir="$(mktemp -d "${TMPDIR:-/tmp}/xrd-save-configs.XXXXXX")"
+tmp_dir="$(mktemp -d "${TMPDIR:-/tmp}/00-xrd-playground-save-configs.XXXXXX")"
 
 cleanup() {
   rm -rf "$tmp_dir"
