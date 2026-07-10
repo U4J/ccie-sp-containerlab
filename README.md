@@ -1,13 +1,14 @@
-# 8-node CCIE-SP XRd Playground
+# CCIE-SP Containerlab Labs
 
-8 台未預先設定業務功能的 Cisco XRd Control Plane 節點。Topology 只建立
-節點與資料 link，不載入 startup config。
+目前預設 lab 是以 Cisco XRd Control Plane 建立的基礎 MPLS LDP lab：
 
 ```text
-PE1 ── ABR1 ── P1 ── ABR3 ── PE3
-  ╲      │       │       │      ╱
-   ╲── ABR2 ── P2 ── ABR4 ──╱
+CE-A -- PE-1 -- P-1 -- P-2 -- PE-2 -- CE-B
 ```
+
+每個練習情境各自位於 `labs/<lab-name>/`，包含 topology、startup configs、
+驗證腳本與該 lab 的說明。這讓不同協定、故障情境與 IP 規劃可獨立部署，不會互相
+覆寫。
 
 使用的 image：
 
@@ -89,40 +90,40 @@ make deploy
 make verify
 ```
 
-XRd 首次開機約需一至數分鐘。`make verify` 會等待 8 台 XR CLI 就緒。
+XRd 首次開機約需一至數分鐘。`make verify` 會等待 6 台 XR CLI 就緒，然後檢查
+IS-IS、LDP 與 CE-A 到 CE-B 的連通性。
 
 ## 進入 XR CLI
 
 ```bash
-make cli NODE=pe1
-make cli NODE=abr1
+make cli NODE=pe-1
+make cli NODE=p-1
 ```
 
 也可以直接執行：
 
 ```bash
-docker exec -it clab-xrd-playground-pe1 /pkg/bin/xr_cli.sh
+docker exec -it clab-xrd-playground-pe-1 /pkg/bin/xr_cli.sh
 ```
 
 ## SSH 管理
 
 | Node | Management IP | Username | Password |
 | --- | --- | --- | --- |
-| PE1 | `172.31.20.11` | `clab` | `clab@123` |
-| ABR1 | `172.31.20.12` | `clab` | `clab@123` |
-| P1 | `172.31.20.13` | `clab` | `clab@123` |
-| ABR3 | `172.31.20.14` | `clab` | `clab@123` |
-| PE3 | `172.31.20.15` | `clab` | `clab@123` |
-| ABR2 | `172.31.20.16` | `clab` | `clab@123` |
-| P2 | `172.31.20.17` | `clab` | `clab@123` |
-| ABR4 | `172.31.20.18` | `clab` | `clab@123` |
+| CE-A | `172.31.20.11` | `clab` | `clab@123` |
+| PE-1 | `172.31.20.12` | `clab` | `clab@123` |
+| P-1 | `172.31.20.13` | `clab` | `clab@123` |
+| P-2 | `172.31.20.14` | `clab` | `clab@123` |
+| PE-2 | `172.31.20.15` | `clab` | `clab@123` |
+| CE-B | `172.31.20.16` | `clab` | `clab@123` |
 
 ```bash
 ssh clab@172.31.20.11
 ssh clab@172.31.20.12
 ```
 
-資料介面一開始沒有 IP 或路由協定設定，請在 XR CLI 中自行設定。
+這個 lab 的資料介面、IS-IS、LDP 與 CE 的靜態路由已由 startup config 設定。
+詳細的 IP 規劃與驗證指令請見 [labs/xrd-playground/README.md](labs/xrd-playground/README.md)。
 
 ## 儲存設定
 
@@ -130,11 +131,11 @@ ssh clab@172.31.20.12
 
 ```bash
 make save-configs
-git diff -- labs/xrd-playground/configs/
+git diff --no-index labs/xrd-playground/configs/ labs/xrd-playground/snapshots/ || true
 ```
 
-設定會儲存在 `labs/xrd-playground/configs/`，但不會由 topology 自動載入，
-因此新的 lab 仍會以空白設定啟動。
+設定會儲存在 `labs/xrd-playground/snapshots/`，不會覆寫受版本控制的
+`configs/` startup configs。
 
 ## 停止與清除
 

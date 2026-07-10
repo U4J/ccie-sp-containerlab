@@ -1,40 +1,51 @@
-# XRd Playground
+# 基礎 MPLS LDP Lab
 
-8 台未套用 startup config 的 XRd Control Plane 節點，拓撲如下：
+這個 lab 以 Cisco XRd Control Plane 建立一條最小的 MPLS provider core：
 
 ```text
-PE1 ── ABR1 ── P1 ── ABR3 ── PE3
-  ╲      │       │       │      ╱
-   ╲── ABR2 ── P2 ── ABR4 ──╱
+CE-A -- PE-1 -- P-1 -- P-2 -- PE-2 -- CE-B
 ```
 
-| Node | Container | Management IP |
-| --- | --- | --- |
-| PE1 | `clab-xrd-playground-pe1` | `172.31.20.11` |
-| ABR1 | `clab-xrd-playground-abr1` | `172.31.20.12` |
-| P1 | `clab-xrd-playground-p1` | `172.31.20.13` |
-| ABR3 | `clab-xrd-playground-abr3` | `172.31.20.14` |
-| PE3 | `clab-xrd-playground-pe3` | `172.31.20.15` |
-| ABR2 | `clab-xrd-playground-abr2` | `172.31.20.16` |
-| P2 | `clab-xrd-playground-p2` | `172.31.20.17` |
-| ABR4 | `clab-xrd-playground-abr4` | `172.31.20.18` |
+CE 端使用靜態預設路由；provider core 使用 IS-IS 建立 IPv4 reachability，並在
+PE/P 之間啟用 LDP。PE 將各自連接的 CE loopback 靜態路由重分配到 IS-IS，因此
+CE-A 的 `198.51.100.1/32` 可透過 MPLS core 連到 CE-B 的
+`198.51.100.2/32`。這是 forwarding/LDP 基礎 lab，尚未使用 VRF、MP-BGP 或
+L3VPN。
 
-預設登入資訊為 `clab / clab@123`。
+| Node | Container | Management IP | Loopback / test IP |
+| --- | --- | --- | --- |
+| CE-A | `clab-xrd-playground-ce-a` | `172.31.20.11` | `198.51.100.1/32` |
+| PE-1 | `clab-xrd-playground-pe-1` | `172.31.20.12` | `10.255.0.1/32` |
+| P-1 | `clab-xrd-playground-p-1` | `172.31.20.13` | `10.255.0.2/32` |
+| P-2 | `clab-xrd-playground-p-2` | `172.31.20.14` | `10.255.0.3/32` |
+| PE-2 | `clab-xrd-playground-pe-2` | `172.31.20.15` | `10.255.0.4/32` |
+| CE-B | `clab-xrd-playground-ce-b` | `172.31.20.16` | `198.51.100.2/32` |
+
+所有設定都在 `configs/`，並由 `startup-config` 載入。登入資訊為
+`clab / clab@123`。
 
 ```bash
 make deploy
 make verify
-make cli NODE=pe1
+make cli NODE=pe-1
 ```
 
-Topology 只定義 XRd image、管理 IP 與資料介面連線，不載入任何
-`startup-config`。節點名稱在 containerlab 中使用小寫。
+驗證腳本會檢查 XR CLI 就緒、IS-IS/LDP 鄰居數量、兩端 CE loopback 的路由，和
+CE-A 到 CE-B 的 ping。也可手動觀察：
 
-完成設定並在 XR CLI 執行 `commit` 後，可匯出 8 台節點的 running-config：
+```bash
+make cli NODE=pe-1
+show isis adjacency
+show mpls ldp neighbor
+show mpls forwarding
+show route 198.51.100.2/32
+```
+
+若想保留實驗中修改後的 running config，而不覆寫版本控制的 startup config：
 
 ```bash
 make save-configs
 ```
 
-設定會儲存在 `labs/xrd-playground/configs/`。這些檔案不會由 topology
-自動載入。
+檔案會寫入不納入版本控制的 `snapshots/`。停止 lab 使用 `make destroy`；要同時
+移除 Containerlab 的 lab state，使用 `make clean`。
