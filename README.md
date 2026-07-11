@@ -52,13 +52,14 @@ forwarding entry，以及 CE-A 到 CE-B 的連通性。
 
 ## 建立下一個 Lab
 
-每個 lab 都應維持下列結構；不要重用其他 lab 的 topology 或 configs：
+每個 lab 都應維持下列結構；不要重用其他 lab 的 topology 或設定檔：
 
 ```text
 labs/<stage>-<topic>/
 ├── README.md
 ├── topology.clab.yml
-├── configs/
+├── CONFIGURATION.md       # 選用：手動設定說明或參考設定
+├── configs/               # 選用：受版本控制的 startup config
 └── scripts/
     └── verify.sh
 ```
@@ -68,8 +69,10 @@ labs/<stage>-<topic>/
 `snapshots/`。
 
 在實作前，README 應先說明目標、拓撲、IP/ASN 規劃、預期驗證結果，以及刻意植入
-的故障（若有）。`configs/` 放受版本控制的 deterministic startup config；實驗
-中匯出的 running-config 應放在已忽略的 `snapshots/`。
+的故障（若有）。若 lab 要自動建置，可在 `configs/` 放受版本控制的 deterministic
+startup config；若目標是手動練習，則不應在 topology 引用 `startup-config`，並可將
+參考設定寫在 `CONFIGURATION.md`。實驗中匯出的 running-config 應放在已忽略的
+`snapshots/`。
 
 ## 主機準備
 

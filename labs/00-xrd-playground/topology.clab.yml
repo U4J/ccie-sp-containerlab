@@ -12,22 +12,16 @@ topology:
   nodes:
     ce-a:
       mgmt-ipv4: 172.31.20.11
-      startup-config: configs/ce-a.cfg
     pe-1:
       mgmt-ipv4: 172.31.20.12
-      startup-config: configs/pe-1.cfg
     p-1:
       mgmt-ipv4: 172.31.20.13
-      startup-config: configs/p-1.cfg
     p-2:
       mgmt-ipv4: 172.31.20.14
-      startup-config: configs/p-2.cfg
     pe-2:
       mgmt-ipv4: 172.31.20.15
-      startup-config: configs/pe-2.cfg
     ce-b:
       mgmt-ipv4: 172.31.20.16
-      startup-config: configs/ce-b.cfg
 
   links:
     - endpoints: ["ce-a:Gi0-0-0-0", "pe-1:Gi0-0-0-0"]
