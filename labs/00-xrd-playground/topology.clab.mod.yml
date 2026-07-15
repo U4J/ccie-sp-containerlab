@@ -1,0 +1,46 @@
+name: 00-xrd-playground
+mgmt:
+  network: 00-xrd-playground-mgmt
+  ipv4-subnet: 172.31.20.0/24
+topology:
+  defaults:
+    kind: cisco_xrd
+    image: docker.io/sbezverk/xrd-control-plane:26.2.1
+  nodes:
+    ce-a:
+      mgmt-ipv4: 172.31.20.11
+      labels:
+        graph-level: 1
+        graph-icon: router
+    pe-1:
+      mgmt-ipv4: 172.31.20.12
+      labels:
+        graph-level: 2
+        graph-icon: router
+    p-1:
+      mgmt-ipv4: 172.31.20.13
+      labels:
+        graph-level: 3
+        graph-icon: router
+    p-2:
+      mgmt-ipv4: 172.31.20.14
+      labels:
+        graph-level: 3
+        graph-icon: router
+    pe-2:
+      mgmt-ipv4: 172.31.20.15
+      labels:
+        graph-level: 2
+        graph-icon: router
+    ce-b:
+      mgmt-ipv4: 172.31.20.16
+      labels:
+        graph-level: 1
+        graph-icon: router
+  links:
+  - endpoints: ['ce-a:Gi0-0-0-0', 'pe-1:Gi0-0-0-0']
+  - endpoints: ['pe-1:Gi0-0-0-1', 'p-1:Gi0-0-0-0']
+  - endpoints: ['p-1:Gi0-0-0-1', 'p-2:Gi0-0-0-0']
+  - endpoints: ['p-2:Gi0-0-0-1', 'pe-2:Gi0-0-0-0']
+  - endpoints: ['pe-2:Gi0-0-0-1', 'ce-b:Gi0-0-0-0']
+annotations: null
