@@ -1,8 +1,8 @@
 # 00-xrd-playground Configuration Guide
 
-This document preserves the original reference scenario for this topology, provided for you to manually configure step-by-step on blank XRd nodes[cite: 5]. The topology itself no longer references `startup-config`; after running `make LAB=00-xrd-playground deploy`, all protocol, data interface IP, loopback, and user account configurations are up to you[cite: 5].
+This document preserves the original reference scenario for this topology, provided for you to manually configure step-by-step on blank XRd nodes. The topology itself no longer references `startup-config`; after running `make LAB=00-xrd-playground deploy`, all protocol, data interface IP, loopback, and user account configurations are up to you.
 
-The reference scenario consists of CE static routing + provider core IS-IS Level-2 + MPLS LDP[cite: 5]. It demonstrates label forwarding only and does not establish VRFs, MP-BGP, or L3VPNs[cite: 5].
+The reference scenario consists of CE static routing + provider core IS-IS Level-2 + MPLS LDP. It demonstrates label forwarding only and does not establish VRFs, MP-BGP, or L3VPNs.
 
 ## 1. Topology and Addressing Plan
 
@@ -10,7 +10,6 @@ The reference scenario consists of CE static routing + provider core IS-IS Level
 CE-A Gi0/0/0/0 -- PE-1 Gi0/0/0/0    PE-1 Gi0/0/0/1 -- P-1 Gi0/0/0/0
 P-1  Gi0/0/0/1 -- P-2  Gi0/0/0/0    P-2  Gi0/0/0/1 -- PE-2 Gi0/0/0/0
 PE-2 Gi0/0/0/1 -- CE-B Gi0/0/0/0
-
 ```
 
 | Link / node | IPv4 address |
@@ -22,7 +21,6 @@ PE-2 Gi0/0/0/1 -- CE-B Gi0/0/0/0
 | PE-2 Gi0/0/0/1 — CE-B Gi0/0/0/0 | `192.0.2.2/31` — `192.0.2.3/31` |
 | PE-1 / P-1 / P-2 / PE-2 Loopback0 | `10.255.0.1` / `.2` / `.3` / `.4` `/32` |
 | CE-A / CE-B Loopback0 | `198.51.100.1/32` / `198.51.100.2/32` |
-|  |  |
 
 The IS-IS instance name is `CORE`, the area is `49.0001`, and it uses Level-2 only. The NET for each node is as follows:
 
@@ -32,7 +30,6 @@ The IS-IS instance name is `CORE`, the area is `49.0001`, and it uses Level-2 on
 | P-1 | `49.0001.0102.5500.0002.00` |
 | P-2 | `49.0001.0102.5500.0003.00` |
 | PE-2 | `49.0001.0102.5500.0004.00` |
-|  |  |
 
 ## 2. Launching and Operation
 
@@ -41,7 +38,6 @@ Start the lab in the project root directory:
 ```bash
 make LAB=00-xrd-playground deploy
 make LAB=00-xrd-playground cli NODE=pe-1
-
 ```
 
 After entering the XR CLI, use `configure` to enter configuration mode, and use `commit` after completing a section to write to the running configuration. Each of the code blocks below can be pasted in configuration mode; please adjust node names according to the actual node. On first boot without custom management settings, the most direct way to operate is `make ... cli`.
@@ -61,7 +57,6 @@ line default
  transport input ssh
 !
 ssh server v2
-
 ```
 
 To add the XR management interface to a management VRF, you can verify the VRF name created by the system first, then configure `MgmtEth0/RP0/CPU0/0` yourself. `mgmt-ipv4` in Containerlab YAML is container management network data, not an XR IPv4 configuration automatically acquired by this interface.
@@ -87,7 +82,6 @@ router static
  !
 !
 commit
-
 ```
 
 ### CE-B
@@ -109,7 +103,6 @@ router static
  !
 !
 commit
-
 ```
 
 ## 5. Provider Core Configuration
@@ -163,7 +156,6 @@ mpls ldp
  !
 !
 commit
-
 ```
 
 ### P-1
@@ -214,7 +206,6 @@ mpls ldp
  !
 !
 commit
-
 ```
 
 ### P-2
@@ -265,7 +256,6 @@ mpls ldp
  !
 !
 commit
-
 ```
 
 ### PE-2
@@ -315,7 +305,6 @@ mpls ldp
  !
 !
 commit
-
 ```
 
 ## 6. Verification Sequence and Expected Results
@@ -328,14 +317,12 @@ show mpls ldp neighbor
 show route 198.51.100.1/32
 show route 198.51.100.2/32
 show mpls forwarding
-
 ```
 
 Finally test from CE-A:
 
 ```xr
 ping ipv4 198.51.100.2 source 198.51.100.1 count 5
-
 ```
 
 After completing the reference scenario, you can also run `make LAB=00-xrd-playground verify` from the host. This verification script will check all expected adjacencies, PE routes, label forwarding table entries, and the ping above.
@@ -346,7 +333,6 @@ To save the current configuration for future reference, run from the project roo
 
 ```bash
 make LAB=00-xrd-playground save-configs
-
 ```
 
 The output will be written to the unversioned `snapshots/` directory; it will not become the startup configuration for the next deployment.
