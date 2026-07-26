@@ -1,18 +1,14 @@
-# XRd MPLS 手動設定 Playground
+# XRd MPLS Manual Configuration Playground
 
-這個 lab 以 Cisco XRd Control Plane 建立一條最小的 MPLS provider core：
+This lab uses Cisco XRd Control Plane to build a minimal MPLS provider core:
 
 ```text
 CE-A -- PE-1 -- P-1 -- P-2 -- PE-2 -- CE-B
 ```
 
-此 lab **不會載入 startup configuration**。節點啟動後，請依自己的練習目標手動
-設定；原本的完整參考設定已整理至 [CONFIGURATION.md](CONFIGURATION.md)。該文件
-以 CE 靜態路由、provider core IS-IS 與 LDP 為範例，最終讓 CE-A 的
-`198.51.100.1/32` 可透過 MPLS core 連到 CE-B 的 `198.51.100.2/32`。範例不使用
-VRF、MP-BGP 或 L3VPN。
+This lab **does not load a startup configuration**. After nodes boot up, please perform manual configuration based on your practice goals. The original complete reference configuration has been compiled into [CONFIGURATION.md](CONFIGURATION.md). That document uses CE static routes, provider core IS-IS, and LDP as an example, ultimately allowing CE-A's `198.51.100.1/32` to connect to CE-B's `198.51.100.2/32` through the MPLS core. The example does not use VRF, MP-BGP, or L3VPN.
 
-| Node | Container | Container management IP | 範例 Loopback / test IP |
+| Node | Container | Container management IP | Example Loopback / test IP |
 | --- | --- | --- | --- |
 | CE-A | `clab-00-xrd-playground-ce-a` | `172.31.20.11` | `198.51.100.1/32` |
 | PE-1 | `clab-00-xrd-playground-pe-1` | `172.31.20.12` | `10.255.0.1/32` |
@@ -21,24 +17,20 @@ VRF、MP-BGP 或 L3VPN。
 | PE-2 | `clab-00-xrd-playground-pe-2` | `172.31.20.15` | `10.255.0.4/32` |
 | CE-B | `clab-00-xrd-playground-ce-b` | `172.31.20.16` | `198.51.100.2/32` |
 
-`mgmt-ipv4` 僅提供 Containerlab 容器管理網路的位址；由於不再注入 XR 設定，
-它不代表 XR 的 `MgmtEth0/RP0/CPU0/0` 已有 IP。建議透過 `make ... cli` 或
-`docker exec` 進入節點並自行設定。若要使用 SSH，請先自行建立帳號、啟用 SSH，
-並設定管理介面。
+`mgmt-ipv4` only provides the address for the Containerlab container management network. Since XR configuration is no longer injected, it does not mean that XR's `MgmtEth0/RP0/CPU0/0` already has an IP address. It is recommended to enter the node via `make ... cli` or `docker exec` and configure it yourself. If you wish to use SSH, please create a user account, enable SSH, and configure the management interface first.
 
 ```bash
 make LAB=00-xrd-playground deploy
 make LAB=00-xrd-playground cli NODE=pe-1
 ```
 
-完成 [設定說明](CONFIGURATION.md) 的參考情境後，可執行：
+After completing the reference scenario in the [configuration guide](CONFIGURATION.md), you can run:
 
 ```bash
 make LAB=00-xrd-playground verify
 ```
 
-驗證腳本會檢查 XR CLI、IS-IS/LDP 鄰居數量、兩端 CE loopback 的路由，和
-CE-A 到 CE-B 的 ping。未完成相應設定時，驗證失敗是預期行為。也可手動觀察：
+The verification script will check the XR CLI, number of IS-IS/LDP neighbors, routes for both CE loopbacks, and pings from CE-A to CE-B. Verification failure is expected behavior if the corresponding configurations are incomplete. You can also inspect manually:
 
 ```bash
 make LAB=00-xrd-playground cli NODE=pe-1
@@ -48,12 +40,10 @@ show mpls forwarding
 show route 198.51.100.2/32
 ```
 
-若想保留實驗中修改後的 running config：
+If you want to save the modified running config from your lab session:
 
 ```bash
 make LAB=00-xrd-playground save-configs
 ```
 
-檔案會寫入不納入版本控制的 `snapshots/`。停止 lab 使用 `make destroy`；要同時
-移除 Containerlab 的 lab state，使用 `make clean`。重新部署前請先停止並清除舊
-lab，避免沿用既有容器的設定狀態。
+Files will be written to the git-ignored `snapshots/` directory. To stop the lab, use `make destroy`; to also remove the Containerlab lab state, use `make clean`. Please stop and clean up the old lab before redeploying to avoid inheriting the configuration state of existing containers.
