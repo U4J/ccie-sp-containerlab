@@ -1,4 +1,3 @@
-```markdown
 # 00-xrd-playground Configuration Guide
 
 This document preserves the original reference scenario for this topology, provided for you to manually configure step-by-step on blank XRd nodes[cite: 5]. The topology itself no longer references `startup-config`; after running `make LAB=00-xrd-playground deploy`, all protocol, data interface IP, loopback, and user account configurations are up to you[cite: 5].
@@ -351,7 +350,5 @@ make LAB=00-xrd-playground save-configs
 ```
 
 The output will be written to the unversioned `snapshots/` directory; it will not become the startup configuration for the next deployment.
-
-```
 
 ```
