@@ -30,8 +30,11 @@ v5.1 practical exam blueprint；實際準備時仍應以 Cisco 最新文件為�
 
 - [`00-xrd-playground`](../labs/00-xrd-playground/README.md)：階段 03 的基礎 MPLS
   forwarding/LDP，拓撲為 `CE-A -- PE-1 -- P-1 -- P-2 -- PE-2 -- CE-B`。
-  後續每個情境請建立各自的 `labs/<lab-name>/` 資料夾，保有自己的 topology、
-  configs、scripts 與 README。
+- [`01-isis-ecmp`](../labs/01-isis-ecmp/README.md)：階段 01 的雙棧 IS-IS、ECMP
+  與收斂。四台 XRd 組成菱形核心，採無 startup-config 的手動練習流程。
+
+後續每個情境請建立各自的 `labs/<lab-name>/` 資料夾，保有自己的 topology、
+configs、scripts 與 README。
 
 ## 平台策略
 

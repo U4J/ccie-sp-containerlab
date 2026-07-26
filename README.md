@@ -9,7 +9,7 @@ For the complete blueprint mapping, please see [docs/blueprint-map.md](docs/blue
 | Stage | Directory | Topic | Status |
 | --- | --- | --- | --- |
 | 00 | [00-xrd-playground](labs/00-xrd-playground/README.md) | Basic MPLS forwarding, IS-IS, LDP | Implemented |
-| 01 | [01-isis-ecmp](labs/01-isis-ecmp/README.md) | IS-IS dual-stack, ECMP, convergence | Planned |
+| 01 | [01-isis-ecmp](labs/01-isis-ecmp/README.md) | IS-IS dual-stack, ECMP, convergence | Implemented |
 | 02 | [02-ospf-bfd-lfa](labs/02-ospf-bfd-lfa/README.md) | OSPFv2/v3, BFD, LFA | Planned |
 | 03 | [03-mpls-ldp-failover](labs/03-mpls-ldp-failover/README.md) | MPLS LDP failover | Planned |
 | 04 | [04-mpbgp-rr](labs/04-mpbgp-rr/README.md) | iBGP, RR, MP-BGP, policy | Planned |
@@ -42,6 +42,14 @@ make LAB=00-xrd-playground cli NODE=pe-1
 ```
 
 The initial boot of XRd takes about one to several minutes. `verify` will check the XR CLI, IS-IS/LDP adjacencies, MPLS forwarding entries, and connectivity from CE-A to CE-B.
+
+## Also Available: 01 IS-IS ECMP
+
+`01-isis-ecmp` is a four-router XRd diamond that starts without startup
+configuration. Its manual configuration guide builds a dual-stack Level-2
+IS-IS domain, two equal-cost paths from R1 to R4, and an R2--R4 link-failure
+exercise. See the [lab README](labs/01-isis-ecmp/README.md) for the topology,
+deployment, and verification steps.
 
 ## Creating the Next Lab
 

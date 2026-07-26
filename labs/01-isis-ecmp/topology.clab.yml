@@ -1,0 +1,26 @@
+name: 01-isis-ecmp
+
+mgmt:
+  network: 01-isis-ecmp-mgmt
+  ipv4-subnet: 172.31.21.0/24
+
+topology:
+  defaults:
+    kind: cisco_xrd
+    image: docker.io/sbezverk/xrd-control-plane:26.2.1
+
+  nodes:
+    r1:
+      mgmt-ipv4: 172.31.21.11
+    r2:
+      mgmt-ipv4: 172.31.21.12
+    r3:
+      mgmt-ipv4: 172.31.21.13
+    r4:
+      mgmt-ipv4: 172.31.21.14
+
+  links:
+    - endpoints: ["r1:Gi0-0-0-0", "r2:Gi0-0-0-0"]
+    - endpoints: ["r1:Gi0-0-0-1", "r3:Gi0-0-0-0"]
+    - endpoints: ["r2:Gi0-0-0-1", "r4:Gi0-0-0-0"]
+    - endpoints: ["r3:Gi0-0-0-1", "r4:Gi0-0-0-1"]
