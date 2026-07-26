@@ -1,18 +1,17 @@
-# 00-xrd-playground 設定說明
+```markdown
+# 00-xrd-playground Configuration Guide
 
-本文件保存此拓撲原先的參考情境，供你在空白的 XRd 節點上逐步手動設定。拓撲本身
-不再引用 `startup-config`；`make LAB=00-xrd-playground deploy` 後，所有協定、資料
-介面 IP、loopback 與帳號設定都由你決定。
+This document preserves the original reference scenario for this topology, provided for you to manually configure step-by-step on blank XRd nodes[cite: 5]. The topology itself no longer references `startup-config`; after running `make LAB=00-xrd-playground deploy`, all protocol, data interface IP, loopback, and user account configurations are up to you[cite: 5].
 
-參考情境是 CE 靜態路由 + provider core IS-IS Level-2 + MPLS LDP。它只示範標籤
-轉送，不建立 VRF、MP-BGP 或 L3VPN。
+The reference scenario consists of CE static routing + provider core IS-IS Level-2 + MPLS LDP[cite: 5]. It demonstrates label forwarding only and does not establish VRFs, MP-BGP, or L3VPNs[cite: 5].
 
-## 1. 拓撲與位址規劃
+## 1. Topology and Addressing Plan
 
 ```text
 CE-A Gi0/0/0/0 -- PE-1 Gi0/0/0/0    PE-1 Gi0/0/0/1 -- P-1 Gi0/0/0/0
 P-1  Gi0/0/0/1 -- P-2  Gi0/0/0/0    P-2  Gi0/0/0/1 -- PE-2 Gi0/0/0/0
 PE-2 Gi0/0/0/1 -- CE-B Gi0/0/0/0
+
 ```
 
 | Link / node | IPv4 address |
@@ -24,9 +23,9 @@ PE-2 Gi0/0/0/1 -- CE-B Gi0/0/0/0
 | PE-2 Gi0/0/0/1 — CE-B Gi0/0/0/0 | `192.0.2.2/31` — `192.0.2.3/31` |
 | PE-1 / P-1 / P-2 / PE-2 Loopback0 | `10.255.0.1` / `.2` / `.3` / `.4` `/32` |
 | CE-A / CE-B Loopback0 | `198.51.100.1/32` / `198.51.100.2/32` |
+|  |  |
 
-IS-IS instance 名稱是 `CORE`，area 為 `49.0001`，並使用 Level-2 only。各節點的
-NET 分別為：
+The IS-IS instance name is `CORE`, the area is `49.0001`, and it uses Level-2 only. The NET for each node is as follows:
 
 | Node | NET |
 | --- | --- |
@@ -34,25 +33,23 @@ NET 分別為：
 | P-1 | `49.0001.0102.5500.0002.00` |
 | P-2 | `49.0001.0102.5500.0003.00` |
 | PE-2 | `49.0001.0102.5500.0004.00` |
+|  |  |
 
-## 2. 啟動與操作方式
+## 2. Launching and Operation
 
-在專案根目錄啟動 lab：
+Start the lab in the project root directory:
 
 ```bash
 make LAB=00-xrd-playground deploy
 make LAB=00-xrd-playground cli NODE=pe-1
+
 ```
 
-進入 XR CLI 後，以 `configure` 進入設定模式，完成一個區塊後使用 `commit` 寫入
-running configuration。下列每個程式區塊皆可在設定模式貼上；節點名稱請依實際節點
-調整。首次開機且沒有自訂管理設定時，最直接的操作方式是 `make ... cli`。
+After entering the XR CLI, use `configure` to enter configuration mode, and use `commit` after completing a section to write to the running configuration. Each of the code blocks below can be pasted in configuration mode; please adjust node names according to the actual node. On first boot without custom management settings, the most direct way to operate is `make ... cli`.
 
-## 3. 共通基本設定（選用）
+## 3. Common Basic Configuration (Optional)
 
-若需要本機帳號與 SSH，請在每台設備各自執行以下設定，並將 hostname 改成該節點
-名稱。這不是拓撲運作的必要條件；管理介面的 VRF、IP 與預設路由也應依你的環境另行
-設定。
+If local accounts and SSH are required, execute the following configurations on each device individually, changing the hostname to that node's name. This is not a prerequisite for topology operation; the management interface VRF, IP, and default route should also be configured separately according to your environment.
 
 ```xr
 hostname pe-1
@@ -65,13 +62,12 @@ line default
  transport input ssh
 !
 ssh server v2
+
 ```
 
-若要讓 XR 管理介面加入管理 VRF，可先確認系統建立的 VRF 名稱，再自行設定
-`MgmtEth0/RP0/CPU0/0`。Containerlab YAML 中的 `mgmt-ipv4` 是容器管理網路資料，
-不是此介面自動取得的 XR IPv4 設定。
+To add the XR management interface to a management VRF, you can verify the VRF name created by the system first, then configure `MgmtEth0/RP0/CPU0/0` yourself. `mgmt-ipv4` in Containerlab YAML is container management network data, not an XR IPv4 configuration automatically acquired by this interface.
 
-## 4. CE 設定
+## 4. CE Configuration
 
 ### CE-A
 
@@ -92,6 +88,7 @@ router static
  !
 !
 commit
+
 ```
 
 ### CE-B
@@ -113,12 +110,12 @@ router static
  !
 !
 commit
+
 ```
 
-## 5. Provider core 設定
+## 5. Provider Core Configuration
 
-PE 會將連到 CE loopback 的靜態路由重分配進 IS-IS；P 路由器只參與 IS-IS 與 LDP。
-所有 core link 都是 point-to-point，並啟用 LDP/IGP synchronization。
+PEs redistribute static routes connected to CE loopbacks into IS-IS; P routers only participate in IS-IS and LDP. All core links are point-to-point and have LDP/IGP synchronization enabled.
 
 ### PE-1
 
@@ -167,6 +164,7 @@ mpls ldp
  !
 !
 commit
+
 ```
 
 ### P-1
@@ -217,6 +215,7 @@ mpls ldp
  !
 !
 commit
+
 ```
 
 ### P-2
@@ -267,6 +266,7 @@ mpls ldp
  !
 !
 commit
+
 ```
 
 ### PE-2
@@ -316,11 +316,12 @@ mpls ldp
  !
 !
 commit
+
 ```
 
-## 6. 驗證順序與預期結果
+## 6. Verification Sequence and Expected Results
 
-先在每台 core router 確認 IS-IS 和 LDP 鄰接：PE 各一個鄰居，P 各兩個鄰居。
+First check IS-IS and LDP adjacencies on each core router: PEs have one neighbor each, and Ps have two neighbors each.
 
 ```xr
 show isis adjacency
@@ -328,24 +329,29 @@ show mpls ldp neighbor
 show route 198.51.100.1/32
 show route 198.51.100.2/32
 show mpls forwarding
+
 ```
 
-最後從 CE-A 測試：
+Finally test from CE-A:
 
 ```xr
 ping ipv4 198.51.100.2 source 198.51.100.1 count 5
+
 ```
 
-完成參考情境後，也可從主機執行 `make LAB=00-xrd-playground verify`。此驗證腳本
-會檢查所有預期鄰接、PE 路由與標籤轉送表項，以及上述 ping。
+After completing the reference scenario, you can also run `make LAB=00-xrd-playground verify` from the host. This verification script will check all expected adjacencies, PE routes, label forwarding table entries, and the ping above.
 
-## 7. 保存你的練習結果
+## 7. Saving Your Practice Results
 
-要保存目前的設定供日後參考，從專案根目錄執行：
+To save the current configuration for future reference, run from the project root directory:
 
 ```bash
 make LAB=00-xrd-playground save-configs
+
 ```
 
-輸出會寫入未納入版本控制的 `snapshots/` 目錄；它不會成為下一次部署的
-startup configuration。
+The output will be written to the unversioned `snapshots/` directory; it will not become the startup configuration for the next deployment.
+
+```
+
+```
