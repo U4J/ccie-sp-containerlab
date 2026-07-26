@@ -133,7 +133,7 @@ router static
 router isis CORE
  net 49.0001.0102.5500.0001.00
  is-type level-2-only
- log-adjacency-changes
+ log adjacency changes
  mpls ldp sync
  address-family ipv4 unicast
   metric-style wide
@@ -177,7 +177,7 @@ interface Loopback0
 router isis CORE
  net 49.0001.0102.5500.0002.00
  is-type level-2-only
- log-adjacency-changes
+ log adjacency changes
  address-family ipv4 unicast
   metric-style wide
   mpls ldp sync
@@ -227,7 +227,7 @@ interface Loopback0
 router isis CORE
  net 49.0001.0102.5500.0003.00
  is-type level-2-only
- log-adjacency-changes
+ log adjacency changes
  address-family ipv4 unicast
   metric-style wide
   mpls ldp sync
@@ -282,7 +282,7 @@ router static
 router isis CORE
  net 49.0001.0102.5500.0004.00
  is-type level-2-only
- log-adjacency-changes
+ log adjacency changes
  mpls ldp sync
  address-family ipv4 unicast
   metric-style wide
