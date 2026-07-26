@@ -71,6 +71,7 @@ hostname ce-a
 interface GigabitEthernet0/0/0/0
  description CE-A-to-PE-1
  ipv4 address 192.0.2.0 255.255.255.254
+ no sh
 !
 interface Loopback0
  description CE-A-test-loopback
@@ -92,6 +93,7 @@ hostname ce-b
 interface GigabitEthernet0/0/0/0
  description CE-B-to-PE-2
  ipv4 address 192.0.2.3 255.255.255.254
+ no sh
 !
 interface Loopback0
  description CE-B-test-loopback
@@ -117,10 +119,12 @@ hostname pe-1
 interface GigabitEthernet0/0/0/0
  description PE-1-to-CE-A
  ipv4 address 192.0.2.1 255.255.255.254
+ no sh
 !
 interface GigabitEthernet0/0/0/1
  description PE-1-to-P-1
  ipv4 address 10.0.0.0 255.255.255.254
+ no sh
 !
 interface Loopback0
  ipv4 address 10.255.0.1 255.255.255.255
@@ -166,10 +170,12 @@ hostname p-1
 interface GigabitEthernet0/0/0/0
  description P-1-to-PE-1
  ipv4 address 10.0.0.1 255.255.255.254
+ no sh
 !
 interface GigabitEthernet0/0/0/1
  description P-1-to-P-2
  ipv4 address 10.0.0.2 255.255.255.254
+ no sh
 !
 interface Loopback0
  ipv4 address 10.255.0.2 255.255.255.255
@@ -216,10 +222,12 @@ hostname p-2
 interface GigabitEthernet0/0/0/0
  description P-2-to-P-1
  ipv4 address 10.0.0.3 255.255.255.254
+ no sh
 !
 interface GigabitEthernet0/0/0/1
  description P-2-to-PE-2
  ipv4 address 10.0.0.4 255.255.255.254
+ no sh
 !
 interface Loopback0
  ipv4 address 10.255.0.3 255.255.255.255
@@ -266,10 +274,12 @@ hostname pe-2
 interface GigabitEthernet0/0/0/0
  description PE-2-to-P-2
  ipv4 address 10.0.0.5 255.255.255.254
+ no sh
 !
 interface GigabitEthernet0/0/0/1
  description PE-2-to-CE-B
  ipv4 address 192.0.2.2 255.255.255.254
+ no sh
 !
 interface Loopback0
  ipv4 address 10.255.0.4 255.255.255.255
