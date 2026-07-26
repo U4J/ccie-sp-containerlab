@@ -350,5 +350,3 @@ make LAB=00-xrd-playground save-configs
 ```
 
 The output will be written to the unversioned `snapshots/` directory; it will not become the startup configuration for the next deployment.
-
-```
